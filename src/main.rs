@@ -102,6 +102,7 @@ fn main() {
         //println!("Object Path: {}", i);
     //}
 
+    // Evaluate for filetypes START HERE 3/13/2026
     // Evaluate for zip files
     //for path in object_paths {
         //let f_type = file_type_eval::file_type_eval(&path);
