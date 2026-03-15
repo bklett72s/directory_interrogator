@@ -123,8 +123,7 @@ fn main() {
         eprintln!("Error reading mbit file: {}", err);
         std::process::exit(1);
     });
-    println!("Magic bits loaded: {}", mbits_key.len()); // Delete me during prod
-
+    
     // If has UI, open file dialog windows
     if has_ui() {
         tgt_dir = file_dialog::tgt_browser();
