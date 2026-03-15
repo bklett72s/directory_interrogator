@@ -2,7 +2,7 @@ use sha2::{Digest, Sha256};
 use std::fs::File;
 use std::io::{BufReader, Read};
 
-// Function to hash a file using SHA-256
+// Coordination function with main.rs
 pub fn hash_file_bridge(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
     let hash_val =hash_file(file_path)?;
     Ok(hash_val)

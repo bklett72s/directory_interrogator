@@ -3,8 +3,7 @@ use std::fs::File;
 use std::io::{Read, Result, self};
 use std::path::Path;
 
-
-
+// Coordination function with main.rs
 pub fn file_bridge(path: &str, mbits_key: Vec<mbits>) -> Result<String> {
     let fbits: String = read_bytes(path)?.iter().map(|b| format!("{:02x}", b)).collect();
 

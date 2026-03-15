@@ -15,6 +15,7 @@ fn os_walk(dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     Ok(paths)
 }
 
+// Coordinator function with main.rs
 pub fn os_walk_bridge(dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let mut paths: Vec<String> = Vec::new();
     paths = os_walk(dir)?;

@@ -7,6 +7,7 @@ fn zip_interrogater(temp_path: &Path, zip_path: &str) -> Result<(), Box<dyn std:
     Ok(())
 }
 
+// Coordination function with main.rs
 pub fn zip_interrogater_bridge(file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
     let temp_dir = tempdir()?;
     let temp_path = temp_dir.path();
