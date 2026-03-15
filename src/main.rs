@@ -3,6 +3,10 @@ use clap::Parser;
 use serde::Deserialize;
 use include_dir::{include_dir, Dir};
 use csv::ReaderBuilder;
+use pyo3::prelude::*;
+use pyo3::types::{PyDict, PyList, PySequence, PyString};
+use pyo3_ffi::c_str;
+use std::fs;
 
 // Files in directory
 mod file_dialog;
@@ -12,12 +16,14 @@ mod folder_walk;
 mod file_type_eval;
 
 // Static directories
-static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/data");
+//static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/data");
+//static SCRIPTS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/python_scripts");
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq, Hash)]
 struct mbits {
-    extension: String,
-    magic_number: String
+    Name: String,
+    Signature: Option<String>,
+    extension: Option<String>
 }
 
 fn has_ui() -> bool{
@@ -35,10 +41,11 @@ fn has_ui() -> bool{
     }
 }
 
+/*
 fn read_mbit_file() -> Result<Vec<mbits>, Box<dyn std::error::Error>> {
     // Placeholder for the actual mbit file reading logic
     let mbis_csv_file = ASSETS_DIR
-        .get_file("file_signatures.csv")
+        .get_file("file_sigs.csv")
         .expect("CSV file not found");
 
     let mbits_csv_data = mbis_csv_file.contents_utf8().expect("Invalid UTF-8 in CSV");
@@ -58,6 +65,45 @@ fn read_mbit_file() -> Result<Vec<mbits>, Box<dyn std::error::Error>> {
     }
 
     Ok(mbits_key)
+}*/
+
+fn read_mbit_file() -> PyResult<Vec<mbits>> {
+
+    //let python_script_path = SCRIPTS_DIR
+            //.get_file("magic_bit_scraper.py")
+            //.expect("Python script not found");
+    //let script: String= fs::read_to_string(&python_script_path.path())
+        //.expect("Failed to read Python script");
+
+    Python::attach(|py: Python<'_>| {
+        let python_script: &std::ffi::CStr = c_str!(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/python_scripts/magic_bit_scraper.py")));
+        let from_python = Python::attach(|py| -> PyResult<Py<PyAny>> {
+            let app : Py<PyAny> = PyModule::from_code(py, &python_script, c"magic_bit_scraper.py",c"")?
+                .getattr("extract_magic_bit_data")?
+                .into();
+            app.call0(py)
+        })?;
+        
+        let py_any = from_python.bind(py);
+
+
+        let py_list = py_any.cast::<PyList>()?;
+
+        
+        let rust_vec: Vec<mbits> = py_list
+            .iter()
+            .map(|item| {
+                let dict = item.cast::<PyDict>().unwrap();
+                mbits {
+                    Name: dict.get_item("Name").unwrap().unwrap().extract().unwrap(),
+                    Signature: dict.get_item("Signature").unwrap().unwrap().extract().unwrap(),
+                    extension: dict.get_item("extension").unwrap().unwrap().extract().unwrap(),
+                }
+            })
+            .collect();
+
+        Ok(rust_vec)
+    })
 }
 
 fn main() {
@@ -68,10 +114,16 @@ fn main() {
     let mut out_dir: String              = String::new();
     let mut object_paths: Vec<String>    = Vec::new();
 
-    let mbits_key = read_mbit_file().unwrap_or_else(|err| {
+    read_mbit_file().unwrap_or_else(|err| { // delete me post test
         eprintln!("Error reading mbit file: {}", err);
         std::process::exit(1);
     });
+
+    let mbits_key: Vec<mbits> = read_mbit_file().unwrap_or_else(|err| {
+        eprintln!("Error reading mbit file: {}", err);
+        std::process::exit(1);
+    });
+    println!("Magic bits loaded: {}", mbits_key.len()); // Delete me during prod
 
     // If has UI, open file dialog windows
     if has_ui() {
@@ -104,7 +156,11 @@ fn main() {
 
     // Evaluate for filetypes START HERE 3/13/2026
     // Evaluate for zip files
+
     //for path in object_paths {
-        //let f_type = file_type_eval::file_type_eval(&path);
+        //let f_type = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
+            //eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
+            //std::process::exit(1);
+        //});
     //}
 }
