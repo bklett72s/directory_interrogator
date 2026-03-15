@@ -123,7 +123,7 @@ fn main() {
         eprintln!("Error reading mbit file: {}", err);
         std::process::exit(1);
     });
-    
+
     // If has UI, open file dialog windows
     if has_ui() {
         tgt_dir = file_dialog::tgt_browser();
@@ -156,10 +156,10 @@ fn main() {
     // Evaluate for filetypes START HERE 3/13/2026
     // Evaluate for zip files
 
-    //for path in object_paths {
-        //let f_type = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
-            //eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
-            //std::process::exit(1);
-        //});
-    //}
+    for path in object_paths {
+        let f_type = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
+            eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
+            std::process::exit(1);
+        });
+    }
 }
