@@ -26,6 +26,7 @@ struct mbits {
     extension: Option<String>
 }
 
+// Function to detect if the program is running in an environment with a UI (Windows or Wayland)
 fn has_ui() -> bool{
     // Detect Windows UI
     #[cfg(windows)]
@@ -41,7 +42,7 @@ fn has_ui() -> bool{
     }
 }
 
-
+// Reads the magic bits from the XML national archies file, and returns a vector of mbits structs
 fn read_mbit_file() -> PyResult<Vec<mbits>> {
 
     Python::attach(|py: Python<'_>| {
@@ -75,13 +76,15 @@ fn read_mbit_file() -> PyResult<Vec<mbits>> {
     })
 }
 
+// Main function, gathers arguments, detects UI, reads magic bits, walks target directory, evaluates file types
 fn main() {
     println!("Program start"); // Delete me during prod
 
     let args: arguments_gather::Args = arguments_gather::Args::parse();
-    let mut tgt_dir: String              = String::new();
-    let mut out_dir: String              = String::new();
-    let mut object_paths: Vec<String>    = Vec::new();
+    let mut tgt_dir: String                 = String::new();
+    let mut out_dir: String                 = String::new();
+    let mut object_paths: Vec<String>       = Vec::new();
+    let mut f_bits_vec: Vec<String>         = Vec::new();
 
     read_mbit_file().unwrap_or_else(|err| { // delete me post test
         eprintln!("Error reading mbit file: {}", err);
@@ -126,9 +129,15 @@ fn main() {
     // Evaluate for zip files
 
     for path in object_paths {
-        let f_type = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
+        let f_bits = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
             eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
             std::process::exit(1);
         });
+
+        f_bits_vec.push(f_bits);
+
+        for f_bit in &f_bits_vec {
+            println!("File: {}, Magic Bits: {}", path, f_bit);
+        }
     }
 }

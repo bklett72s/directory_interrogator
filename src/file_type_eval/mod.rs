@@ -7,10 +7,9 @@ use std::path::Path;
 pub fn file_bridge(path: &str, mbits_key: Vec<mbits>) -> Result<String> {
     let fbits: String = read_bytes(path)?.iter().map(|b| format!("{:02x}", b)).collect();
 
-    println!("{:?}", fbits);
+    //println!("{:?}", fbits);
 
-
-    Ok("placeholder".to_string())
+    Ok(fbits.to_string())
 }
 
 /*
@@ -46,5 +45,5 @@ fn read_bytes(tgt: &str) -> io::Result<Vec<u8>> {
         buff_return = buffer.to_vec()
     }
 
-    Ok(buff_return) // Placeholder, should return actual magic bytes
+    Ok(buff_return) // Return buffer
 }
