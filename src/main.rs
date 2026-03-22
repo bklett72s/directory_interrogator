@@ -41,39 +41,8 @@ fn has_ui() -> bool{
     }
 }
 
-/*
-fn read_mbit_file() -> Result<Vec<mbits>, Box<dyn std::error::Error>> {
-    // Placeholder for the actual mbit file reading logic
-    let mbis_csv_file = ASSETS_DIR
-        .get_file("file_sigs.csv")
-        .expect("CSV file not found");
-
-    let mbits_csv_data = mbis_csv_file.contents_utf8().expect("Invalid UTF-8 in CSV");
-
-    let mut rdr = ReaderBuilder::new()
-        .has_headers(true)
-        .from_reader(mbits_csv_data.as_bytes());
-
-    let mut mbits_list: Vec<mbits> = Vec::new();
-
-    let mbits_key: Vec<mbits> = rdr.deserialize()
-        .map(|result| result.expect("Failed to parse record"))
-        .collect();
-
-    for mbit in &mbits_key {// Delete me during prod
-        println!("Extension: {}, Magic Number: {}", mbit.extension, mbit.magic_number);
-    }
-
-    Ok(mbits_key)
-}*/
 
 fn read_mbit_file() -> PyResult<Vec<mbits>> {
-
-    //let python_script_path = SCRIPTS_DIR
-            //.get_file("magic_bit_scraper.py")
-            //.expect("Python script not found");
-    //let script: String= fs::read_to_string(&python_script_path.path())
-        //.expect("Failed to read Python script");
 
     Python::attach(|py: Python<'_>| {
         let python_script: &std::ffi::CStr = c_str!(include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/python_scripts/magic_bit_scraper.py")));
