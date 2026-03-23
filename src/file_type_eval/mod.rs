@@ -4,20 +4,21 @@ use std::io::{Read, Result, self};
 use std::path::Path;
 
 
-// GOING TO NEED TO INCLUDE LOGIC TO REDUCE MULTIPLE MATCHES, MABYE COMPARE MATCHES TO EXTENTIONS IN DATA FILE
+// GOING TO NEED TO INCLUDE LOGIC TO REDUCE MULTIPLE MATCHES, MABYE COMPARE MATCHES TO EXTENTIONS IN DATA FILE kinda fixed with lowercase
 // Coordination function with main.rs
 pub fn file_bridge(path: &str, mbits_key: Vec<mbits>) -> Result<String> {
     let fbits: String = read_bytes(path)?.iter().map(|b| format!("{:02x}", b)).collect();
+    println!("File bits: {:?}", fbits);
 
     if Path::new(path).is_file() && fbits != ""{
         for bits_type in mbits_key {
             let temp_bits       = bits_type.Signature.unwrap().clone();
-            println!("Compared bits: {:?}", temp_bits);
-            println!("File bits: {:?}", fbits);
+            //println!("Compared bits: {:?}", temp_bits);
+            
             let temp_bits_len   = temp_bits.len();
             let fbit_trunc      = &fbits[..temp_bits_len.min(fbits.len())];
 
-            if temp_bits == fbit_trunc {
+            if temp_bits.to_lowercase() == fbit_trunc.to_lowercase() {
 
                 println!("File Bits:{}, Matching Bits: {:?}", fbit_trunc, &temp_bits);
                 println!("DETECTED: File: {}, Detected Type: {}, Extension: {}", path, bits_type.Name, bits_type.Extension.unwrap_or("0".into()));
