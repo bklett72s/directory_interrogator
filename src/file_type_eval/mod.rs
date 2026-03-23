@@ -3,32 +3,35 @@ use std::fs::File;
 use std::io::{Read, Result, self};
 use std::path::Path;
 
+
+// GOING TO NEED TO INCLUDE LOGIC TO REDUCE MULTIPLE MATCHES, MABYE COMPARE MATCHES TO EXTENTIONS IN DATA FILE
 // Coordination function with main.rs
 pub fn file_bridge(path: &str, mbits_key: Vec<mbits>) -> Result<String> {
     let fbits: String = read_bytes(path)?.iter().map(|b| format!("{:02x}", b)).collect();
 
+    if Path::new(path).is_file() && fbits != ""{
+        for bits_type in mbits_key {
+            let temp_bits       = bits_type.Signature.unwrap().clone();
+            println!("Compared bits: {:?}", temp_bits);
+            println!("File bits: {:?}", fbits);
+            let temp_bits_len   = temp_bits.len();
+            let fbit_trunc      = &fbits[..temp_bits_len.min(fbits.len())];
+
+            if temp_bits == fbit_trunc {
+
+                println!("File Bits:{}, Matching Bits: {:?}", fbit_trunc, &temp_bits);
+                println!("DETECTED: File: {}, Detected Type: {}, Extension: {}", path, bits_type.Name, bits_type.Extension.unwrap_or("0".into()));
+            }
+        }
+    }
     //println!("{:?}", fbits);
 
     Ok(fbits.to_string())
 }
 
-/*
-fn detect_file_type(path: &str) -> Result<String> {
 
-    let path = Path::new(path);
-    if path.is_file() {
-        let file_type = FileFormat::from_file(path)?;
-        println!("File evaluated: {:?}", path);
-        println!("File type: {:?}", file_type.name());
-        println!("File type: {:?}", file_type.short_name());
-        println!("File type: {:?}", file_type.extension());
-        
-    }
-    Ok("placeholder".to_string())
-}
-    */
 fn read_bytes(tgt: &str) -> io::Result<Vec<u8>> {
-    println!("Evaluating file type for path: {}", tgt);
+    //println!("Evaluating file type for path: {}", tgt);
 
     let path = Path::new(tgt);
     let mut buff_return: Vec<u8> = Vec::new();

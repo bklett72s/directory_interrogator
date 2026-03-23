@@ -39,7 +39,10 @@ def extract_magic_bit_data():
         })
 
     for fmt in root.findall(".//pronom:FileFormat", ns):
-        fmt_id = fmt.get("ID")
+        fmt_id = ""
+        for sig_ref in fmt.findall(".//pronom:InternalSignatureID", ns):
+            fmt_id = sig_ref.text
+            break
         fmt_name = fmt.get("Name")
         fmt_version = fmt.get("Version")
 

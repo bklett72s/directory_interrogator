@@ -23,7 +23,7 @@ mod file_type_eval;
 struct mbits {
     Name: String,
     Signature: Option<String>,
-    extension: Option<String>
+    Extension: Option<String>
 }
 
 // Function to detect if the program is running in an environment with a UI (Windows or Wayland)
@@ -67,7 +67,7 @@ fn read_mbit_file() -> PyResult<Vec<mbits>> {
                 mbits {
                     Name: dict.get_item("Name").unwrap().unwrap().extract().unwrap(),
                     Signature: dict.get_item("Signature").unwrap().unwrap().extract().unwrap(),
-                    extension: dict.get_item("extension").unwrap().unwrap().extract().unwrap(),
+                    Extension: dict.get_item("extension").unwrap().unwrap().extract().unwrap(),
                 }
             })
             .collect();
@@ -85,6 +85,7 @@ fn main() {
     let mut out_dir: String                 = String::new();
     let mut object_paths: Vec<String>       = Vec::new();
     let mut f_bits_vec: Vec<String>         = Vec::new();
+    let mut prod_list: Vec<String>          = Vec::new();
 
     read_mbit_file().unwrap_or_else(|err| { // delete me post test
         eprintln!("Error reading mbit file: {}", err);
@@ -136,8 +137,5 @@ fn main() {
 
         f_bits_vec.push(f_bits);
 
-        for f_bit in &f_bits_vec {
-            println!("File: {}, Magic Bits: {}", path, f_bit);
-        }
     }
 }
