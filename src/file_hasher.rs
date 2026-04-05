@@ -1,6 +1,7 @@
 use sha2::{Digest, Sha256};
 use std::fs::File;
 use std::io::{BufReader, Read};
+use hex;
 
 // Coordination function with main.rs
 pub fn hash_file_bridge(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -22,6 +23,7 @@ fn hash_file(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
         }
         hasher.update(&buffer[..bytes_read]);
     }
-    let result = hasher.finalize();
-    Ok(format!("{:x}", result))
+    let result: sha2::digest::array::Array<u8, sha2::digest::typenum::UInt<sha2::digest::typenum::UInt<sha2::digest::typenum::UInt<sha2::digest::typenum::UInt<sha2::digest::typenum::UInt<sha2::digest::typenum::UInt<sha2::digest::typenum::UTerm, sha2::digest::consts::B1>, sha2::digest::consts::B0>, sha2::digest::consts::B0>, sha2::digest::consts::B0>, sha2::digest::consts::B0>, sha2::digest::consts::B0>> = hasher.finalize();
+    let result_string = hex::encode(result);
+    Ok(result_string)
 }

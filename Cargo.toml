@@ -8,9 +8,11 @@ byteorder = "1.5.0"
 clap = { version = "4.6.0", features = ["derive"] }
 csv = "1.4.0"
 file-format = "0.28.0"
+hex = "0.4.3"
 include_dir = "0.7.4"
 pyo3 = { version = "0.28.2", features = ["auto-initialize"] }
 pyo3-ffi = "0.28.2"
 rfd = "0.17.2"
 serde = { version = "1.0.228", features = ["derive"] }
+sha2 = "0.11.0"
 tempfile = "3.27.0"

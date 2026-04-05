@@ -13,6 +13,7 @@ mod arguments_gather;
 mod archive_interrogater;
 mod folder_walk;
 mod file_type_eval;
+mod file_hasher;
 
 // Static directories
 //static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/data");
@@ -85,7 +86,7 @@ fn main() {
 
     // Vecs to store paths, types, and a final product list
     let mut object_paths: Vec<String>       = Vec::new();
-    let mut determinations: Vec<String>     = Vec::new();
+    //let mut determinations: Vec<String>     = Vec::new();
     let mut prod_list: Vec<String>          = Vec::new();
 
     read_mbit_file().unwrap_or_else(|err| { // delete me post test
@@ -127,7 +128,7 @@ fn main() {
         //println!("Object Path: {}", i);
     //}
 
-    // Evaluate file types
+    // Evaluate path
     for path in object_paths {
         let path_var = Path::new(&path);
         if path_var.is_file() {
@@ -135,8 +136,9 @@ fn main() {
                 eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
                 std::process::exit(1);
             });
+            let hash = file_hasher::hash_file_bridge(&path);
 
-            determinations.push(type_determination);
+            prod_list.push(format!("{}, {}, {:?}", path, type_determination, hash));
         }
 
     }
