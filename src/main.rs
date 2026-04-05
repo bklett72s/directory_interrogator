@@ -1,12 +1,11 @@
 // Crates
 use clap::Parser;
 use serde::Deserialize;
-use include_dir::{include_dir, Dir};
 use csv::ReaderBuilder;
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList, PySequence, PyString};
+use pyo3::types::{PyDict, PyList};
 use pyo3_ffi::c_str;
-use std::fs;
+use std::path::Path;
 
 // Files in directory
 mod file_dialog;
@@ -83,8 +82,10 @@ fn main() {
     let args: arguments_gather::Args = arguments_gather::Args::parse();
     let mut tgt_dir: String                 = String::new();
     let mut out_dir: String                 = String::new();
+
+    // Vecs to store paths, types, and a final product list
     let mut object_paths: Vec<String>       = Vec::new();
-    let mut f_bits_vec: Vec<String>         = Vec::new();
+    let mut determinations: Vec<String>     = Vec::new();
     let mut prod_list: Vec<String>          = Vec::new();
 
     read_mbit_file().unwrap_or_else(|err| { // delete me post test
@@ -126,16 +127,17 @@ fn main() {
         //println!("Object Path: {}", i);
     //}
 
-    // Evaluate for filetypes START HERE 3/13/2026
-    // Evaluate for zip files
-
+    // Evaluate file types
     for path in object_paths {
-        let f_bits = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
-            eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
-            std::process::exit(1);
-        });
+        let path_var = Path::new(&path);
+        if path_var.is_file() {
+            let type_determination = file_type_eval::file_bridge(&path, mbits_key.clone()).unwrap_or_else(|err| {
+                eprintln!("Error during file type evaluation: {}... Path: {}", err, path);
+                std::process::exit(1);
+            });
 
-        f_bits_vec.push(f_bits);
+            determinations.push(type_determination);
+        }
 
     }
 }

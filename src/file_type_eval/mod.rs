@@ -39,15 +39,17 @@ fn read_bytes(tgt: &str) -> io::Result<Vec<u8>> {
 
 // Function to determine potential matches
 fn match_probability(fbits: String, path: &str, mbits_key: Vec<mbits>) -> io::Result<String> {
-    let mut pot_matches: Vec<String> = Vec::new();
-    let mut match_counter: usize = 0;
-    let mut determination: String = "Unknown, Potential Text File".to_string();
-    let mut confidence: f32 = 0.0;
+    let mut pot_matches: Vec<String>    = Vec::new();
+    let mut match_counter: usize        = 0;
+    let mut determination: String       = "Unknown, Potential Text File".to_string();
+    let mut confidence: f32             = 0.0;
+    let mut confidence_string: String   = String::new();
 
     if Path::new(path).is_file() && fbits != ""{
         for bits_type in mbits_key {
             let temp_bits: String       = bits_type.Signature.unwrap().clone();
             let temp_bits_len: usize    = temp_bits.len();
+
             let fbit_trunc  = &fbits[..temp_bits_len.min(fbits.len())];
 
             if temp_bits.to_lowercase() == fbit_trunc.to_lowercase() {
@@ -74,8 +76,8 @@ fn match_probability(fbits: String, path: &str, mbits_key: Vec<mbits>) -> io::Re
             }
             
         }
-        //println!("File: {}", path);
-        //println!("Determination: {}", determination);
+        println!("File: {}", path);
+        println!("Determination: {}", determination);
     }
 
     Ok(determination.to_string())
