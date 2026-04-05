@@ -1,6 +1,5 @@
 // Crates
 use std::fs;
-use std::path::Path;
 
 fn os_walk(dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let mut paths = Vec::new();
@@ -17,7 +16,6 @@ fn os_walk(dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
 
 // Coordinator function with main.rs
 pub fn os_walk_bridge(dir: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-    let mut paths: Vec<String> = Vec::new();
-    paths = os_walk(dir)?;
+    let paths: Vec<String> = os_walk(dir)?;
     Ok(paths)
 }
