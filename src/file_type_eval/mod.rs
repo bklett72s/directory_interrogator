@@ -1,6 +1,5 @@
 use crate::mbits;
-use std::fs::File;
-use std::io::{Read, Result, self};
+use std::io::{Result, self};
 use std::path::Path;
 
 
@@ -13,9 +12,8 @@ pub fn file_bridge(path: &str, mbits_key: Vec<mbits>) -> Result<String> {
 
     //println!("{:?}", fbits);
 
-    Ok("test holder".to_string())
+    Ok(determination)
 }
-
 
 // Function to read the first 16 bytes of a file and return them as a vector of bytes
 fn read_bytes(tgt: &str) -> io::Result<Vec<u8>> {
@@ -76,11 +74,11 @@ fn match_probability(fbits: String, path: &str, mbits_key: Vec<mbits>) -> io::Re
             }
             
         }
-        println!("File: {}", path);
-        println!("Determination: {}", determination);
+        //println!("File: {}", path);
+        //println!("Determination: {}", determination);
     }
 
-    Ok("Test".to_string())
+    Ok(determination.to_string())
 }
 
 fn count_matches(search_string: String, pot_matches: Vec<String>) -> Result<usize> {
