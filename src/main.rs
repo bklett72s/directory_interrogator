@@ -138,6 +138,9 @@ fn main() {
             });
             let hash = file_hasher::hash_file_bridge(&path);
 
+            // Need to search for the words "zip", "archive", or "compressed" in the type determination, 
+            // and if found, send the file to the archive interrogater
+
             prod_list.push(format!("{}, {}, {:?}", path, type_determination, hash));
         }
 
