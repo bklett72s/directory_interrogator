@@ -41,7 +41,7 @@ fn read_bytes(tgt: &str) -> io::Result<Vec<u8>> {
 fn match_probability(fbits: String, path: &str, mbits_key: Vec<mbits>) -> io::Result<String> {
     let mut pot_matches: Vec<String>    = Vec::new();
     let mut match_counter: usize        = 0;
-    let mut determination: String       = "Unknown, Potential Text File".to_string();
+    let mut determination: String       = "Unknown Potential Text File".to_string();
     let mut confidence: f32             = 0.0;
     let mut confidence_string: String   = String::new();
 
