@@ -138,7 +138,6 @@ fn main() {
             });
             let hash = file_hasher::hash_file_bridge(&path);
 
-            prod_list.push(format!("{}, {}, {:?}", path, type_determination, hash));
         }
 
     }
